@@ -1,10 +1,11 @@
 import 'package:book_store/app/data/book_model.dart';
-import 'package:book_store/app/modules/books/book_controller.dart';
+import 'package:book_store/app/modules/books/books_controller.dart';
+import 'package:book_store/core/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class BookListView extends StatelessWidget {
-  final BookController _bookController = Get.find();
+class BooksView extends StatelessWidget {
+  final controller = Get.put(getIt<BooksController>());
 
   @override
   Widget build(BuildContext context) {
@@ -16,17 +17,18 @@ class BookListView extends StatelessWidget {
         () => GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 8.0,
-            mainAxisSpacing: 8.0,
+            crossAxisSpacing: 16.0,
+            mainAxisSpacing: 16.0,
           ),
-          itemCount: _bookController.books.length,
+          itemCount: controller.books.length,
           itemBuilder: (context, index) {
-            Book book = _bookController.books[index];
+            Book book = controller.books[index];
             return GestureDetector(
               onTap: () => _editBook(context, book, index),
               child: Card(
+                clipBehavior: Clip.antiAlias,
                 elevation: 3,
-                child: Column(
+                child: Column( 
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
@@ -106,7 +108,7 @@ class BookListView extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                _bookController.addBook(
+                controller.addBook(
                   Book(
                     id: DateTime.now().toString(),
                     title: titleController.text,
@@ -163,7 +165,7 @@ class BookListView extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                _bookController.updateBook(
+                controller.updateBook(
                   index,
                   Book(
                     id: book.id,

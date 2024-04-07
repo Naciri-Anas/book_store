@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:book_store/app/data/book_model.dart';
 import 'package:book_store/app/modules/books/books_controller.dart';
 import 'package:book_store/core/di/injection.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'add_book.dart';
 
 class BooksView extends StatelessWidget {
   final controller = Get.put(getIt<BooksController>());
@@ -28,7 +29,7 @@ class BooksView extends StatelessWidget {
               child: Card(
                 clipBehavior: Clip.antiAlias,
                 elevation: 3,
-                child: Column( 
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
@@ -58,6 +59,7 @@ class BooksView extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
+                    _buildPopupMenuButton(context, book, index),
                   ],
                 ),
               ),
@@ -73,57 +75,9 @@ class BooksView extends StatelessWidget {
   }
 
   void _addBook(BuildContext context) {
-    TextEditingController titleController = TextEditingController();
-    TextEditingController imageUrlController = TextEditingController();
-    TextEditingController descriptionController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add Book'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: InputDecoration(labelText: 'Title'),
-                ),
-                TextField(
-                  controller: imageUrlController,
-                  decoration: InputDecoration(labelText: 'Image URL'),
-                ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: InputDecoration(labelText: 'Description'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                controller.addBook(
-                  Book(
-                    id: DateTime.now().toString(),
-                    title: titleController.text,
-                    imageUrl: imageUrlController.text,
-                    description: descriptionController.text,
-                  ),
-                );
-                Navigator.pop(context);
-              },
-              child: Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
+    Get.to(AddBookView())?.then((value) {
+      // Do something after adding book, if needed
+    });
   }
 
   void _editBook(BuildContext context, Book book, int index) {
@@ -182,5 +136,38 @@ class BooksView extends StatelessWidget {
         );
       },
     );
+  }
+
+  Widget _buildPopupMenuButton(BuildContext context, Book book, int index) {
+    return PopupMenuButton(
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: 'delete',
+          child: ListTile(
+            leading: Icon(Icons.delete),
+            title: Text('Delete'),
+          ),
+        ),
+        PopupMenuItem(
+          value: 'update',
+          child: ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Update'),
+          ),
+        ),
+      ],
+      onSelected: (value) {
+        if (value == 'delete') {
+          _deleteBook(context, index);
+        } else if (value == 'update') {
+          _editBook(context, book, index);
+        }
+      },
+    );
+  }
+
+  void _deleteBook(BuildContext context, int index) {
+    controller.deleteBook(index);
+    Get.back(); // Close the dialog
   }
 }

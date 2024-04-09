@@ -4,6 +4,9 @@ import 'package:book_store/app/data/book_model.dart';
 import 'package:book_store/app/modules/books/books_controller.dart';
 import 'package:book_store/core/di/injection.dart';
 import 'add_book.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'book_card.dart';
 
 class BooksView extends StatelessWidget {
   final controller = Get.put(getIt<BooksController>());
@@ -24,45 +27,12 @@ class BooksView extends StatelessWidget {
           itemCount: controller.books.length,
           itemBuilder: (context, index) {
             Book book = controller.books[index];
-            return GestureDetector(
+            return BookCard(
+              // Use the BookCard widget
+              book: book,
               onTap: () => _editBook(context, book, index),
-              child: Card(
-                clipBehavior: Clip.antiAlias,
-                elevation: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: NetworkImage(book.imageUrl),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        book.title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        book.description,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    _buildPopupMenuButton(context, book, index),
-                  ],
-                ),
-              ),
+              onDelete: () => _deleteBook(context, index),
+              onUpdate: () => _editBook(context, book, index),
             );
           },
         ),

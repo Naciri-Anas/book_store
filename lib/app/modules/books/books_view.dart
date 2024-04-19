@@ -137,7 +137,26 @@ class BooksView extends StatelessWidget {
   }
 
   void _deleteBook(BuildContext context, int index) {
-    controller.deleteBook(index);
-    Get.back(); // Close the dialog
+    Get.defaultDialog(
+      title: 'Confirm Delete',
+      content: Text('Are you sure you want to delete this book?'),
+      textConfirm: 'Delete',
+      confirmTextColor: Colors.white,
+      onConfirm: () {
+        controller.deleteBook(index);
+        Get.back(); // Close the dialog
+        Get.back(); // Close the book edit dialog if it's open
+        Get.snackbar(
+          'Success',
+          'Book deleted successfully',
+          duration: Duration(seconds: 4),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      },
+      textCancel: 'Cancel',
+      onCancel: () {
+        Get.back(); // Close the dialog
+      },
+    );
   }
 }

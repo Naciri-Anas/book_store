@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:book_store/app/data/book_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class BookCard extends StatelessWidget {
   final Book book;
@@ -84,6 +86,8 @@ class BookCard extends StatelessWidget {
       onSelected: (value) {
         if (value == 'delete') {
           onDelete();
+
+
         } else if (value == 'update') {
           onUpdate();
         }

@@ -7,6 +7,7 @@ class AddBookView extends StatelessWidget {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController imageUrlController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // Key for form validation
   final BooksController controller = Get.find<BooksController>();
 
   @override
@@ -17,38 +18,67 @@ class AddBookView extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: titleController,
-              decoration: InputDecoration(labelText: 'Title'),
-            ),
-            TextField(
-              controller: imageUrlController,
-              decoration: InputDecoration(labelText: 'Image URL'),
-            ),
-            TextField(
-              controller: descriptionController,
-              decoration: InputDecoration(labelText: 'Description'),
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                // Add book logic here
-                controller.addBook(
-                  Book(
-                    id: DateTime.now().toString(),
-                    title: titleController.text,
-                    imageUrl: imageUrlController.text,
-                    description: descriptionController.text,
-                  ),
-                );
-                Get.back();
-              },
-              child: Text('Add Book'),
-            ),
-          ],
+        child: Form(
+          key: _formKey, // Assign form key
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextFormField(
+                controller: titleController,
+                decoration: InputDecoration(labelText: 'Title'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter a title';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: imageUrlController,
+                decoration: InputDecoration(labelText: 'Image URL'),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter an image URL';
+                  }
+                  // You can add more validation for URL format if needed
+                  return null;
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: descriptionController,
+                decoration: InputDecoration(labelText: 'Description'),
+              ),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  // Validate form
+                  if (_formKey.currentState!.validate()) {
+                    // If form is valid, add book
+                    controller.addBook(
+                      Book(
+                        id: DateTime.now().toString(),
+                        title: titleController.text,
+                        imageUrl: imageUrlController.text,
+                        description: descriptionController.text,
+                      ),
+                    );
+
+                    Get.back();
+
+                    Get.snackbar(
+                      'Success',
+                      'Book added successfully',
+                      duration: Duration(seconds: 4),
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  }
+                },
+                child: Text('Add Book'),
+              ),
+            ],
+          ),
         ),
       ),
     );

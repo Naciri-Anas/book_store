@@ -27,4 +27,6 @@ class Locales {
     'book_add': 'ajouté avec succès',
     'error_upload_image': 'Erreur lors de l\'envoi de l\'image',
   };
+
+  static var error_upload_image;
 }

@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:book_store/app/data/book_model.dart';
 import 'package:book_store/app/modules/books/books_controller.dart';
+import 'package:book_store/app/shared/widgets/app_show_overlay.dart';
 import 'package:book_store/core/di/injection.dart';
-import 'add_book.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import 'add_book.dart';
 import 'book_card.dart';
 
 class BooksView extends StatelessWidget {
@@ -136,16 +136,16 @@ class BooksView extends StatelessWidget {
     );
   }
 
-  void _deleteBook(BuildContext context, int index) {
-    Get.defaultDialog(
+  Future _deleteBook(BuildContext context, int index) async {
+    final result = await Get.defaultDialog<String?>(
       title: 'Confirm Delete',
-      content: Text('Are you sure you want to delete this book?'),
+      content: const Text('Are you sure you want to delete this book?'),
       textConfirm: 'Delete',
       confirmTextColor: Colors.white,
-      onConfirm: () {
+      onConfirm: () async {
         controller.deleteBook(index);
-        Get.back(); // Close the dialog
-        Get.back(); // Close the book edit dialog if it's open
+        await onCloseOverlays(closeOverlays: true);
+
         Get.snackbar(
           'Success',
           'Book deleted successfully',
@@ -158,5 +158,7 @@ class BooksView extends StatelessWidget {
         Get.back(); // Close the dialog
       },
     );
+
+    print(result);
   }
 }

@@ -14,7 +14,7 @@ class BooksController extends GetxController {
   BooksController(this.booksService);
 
   void addBook(Book book) {
-    booksService.books.add(book);
+    booksService.add(book);
   }
 
   void updateBook(int index, Book book) {
@@ -23,6 +23,17 @@ class BooksController extends GetxController {
 
   void deleteBook(int index) {
     booksService.books.removeAt(index);
+  }
+
+  goToCreateBook() {
+    Get.toNamed(Routes.CU_BOOK);
+  }
+
+
+  goToUpdateBook(String id) {
+    Get.toNamed(Routes.CU_BOOK, parameters: {
+      'id': id,
+    });
   }
 
 }

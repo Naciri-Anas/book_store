@@ -1,5 +1,7 @@
-import 'package:book_store/app/modules/books/books_view.dart';
 import 'package:get/get.dart';
+
+import '../modules/books/books_view.dart';
+import '../modules/cu_book/views/cu_book_view.dart';
 
 part 'app_routes.dart';
 
@@ -12,6 +14,12 @@ class AppPages {
     GetPage(
       name: _Paths.BOOKS,
       page: () => BooksView(),
+    ),
+    GetPage(
+      name: _Paths.CU_BOOK,
+      page: () => CuBookView(
+        id: Get.parameters['id'],
+      ),
     ),
   ];
 }

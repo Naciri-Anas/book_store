@@ -2,6 +2,7 @@ import 'package:book_store/app/data/book_model.dart';
 import 'package:book_store/app/modules/books/books_controller.dart';
 import 'package:book_store/app/shared/widgets/app_show_overlay.dart';
 import 'package:book_store/core/di/injection.dart';
+import 'package:book_store/generated/locales.g.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -143,12 +144,14 @@ class BooksView extends StatelessWidget {
       textConfirm: 'Delete',
       confirmTextColor: Colors.white,
       onConfirm: () async {
-        controller.deleteBook(index);
+        controller.onDeleteBook(index);
         await onCloseOverlays(closeOverlays: true);
 
         Get.snackbar(
           'Success',
-          'Book deleted successfully',
+          LocaleKeys.book_added.trParams({
+            'name':'Hello SidiALi'
+          }),
           duration: Duration(seconds: 4),
           snackPosition: SnackPosition.BOTTOM,
         );

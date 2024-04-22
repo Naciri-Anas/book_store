@@ -21,7 +21,7 @@ class BooksController extends GetxController {
     booksService.books[index] = book;
   }
 
-  void deleteBook(int index) {
+  void onDeleteBook(int index) {
     booksService.books.removeAt(index);
   }
 

@@ -1,5 +1,6 @@
 {
   "app_name":"booky",
   "book_add": "added sucessfuly",
+  "book_added": "@name added sucessfuly",
   "error_upload_image": "error uploading image"
 }

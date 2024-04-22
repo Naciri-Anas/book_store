@@ -1,6 +1,7 @@
 import 'package:book_store/app/modules/books/books_controller.dart';
 import 'package:book_store/app/modules/books/books_view.dart';
 import 'package:book_store/core/di/injection.dart';
+import 'package:book_store/core/translation/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:injectable/injectable.dart';
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      translations: Messages(),
+      locale: Get.deviceLocale,
+      fallbackLocale: const Locale('en'),
       home: BooksView(),
     );
 

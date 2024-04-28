@@ -1,5 +1,7 @@
 import 'package:book_store/app/data/book_model.dart';
 import 'package:book_store/app/modules/books/books_controller.dart';
+import 'package:book_store/app/modules/cu_book/views/cu_book_view.dart';
+import 'package:book_store/app/routes/app_pages.dart';
 import 'package:book_store/app/shared/widgets/app_show_overlay.dart';
 import 'package:book_store/core/di/injection.dart';
 import 'package:book_store/generated/locales.g.dart';
@@ -34,6 +36,7 @@ class BooksView extends StatelessWidget {
               onTap: () => _editBook(context, book, index),
               onDelete: () => _deleteBook(context, index),
               onUpdate: () => _editBook(context, book, index),
+              onUpdate3: () => _editBook3(context, book, index),
             );
           },
         ),
@@ -109,6 +112,65 @@ class BooksView extends StatelessWidget {
     );
   }
 
+  void _editBook3(BuildContext context, Book book, int index) {
+    TextEditingController titleController =
+        TextEditingController(text: book.title);
+    TextEditingController imageUrlController =
+        TextEditingController(text: book.imageUrl);
+    TextEditingController descriptionController =
+        TextEditingController(text: book.description);
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Update Book'),
+                SizedBox(height: 16.0),
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(labelText: 'Title'),
+                ),
+                TextField(
+                  controller: imageUrlController,
+                  decoration: InputDecoration(labelText: 'Image URL'),
+                ),
+                TextField(
+                  controller: descriptionController,
+                  decoration: InputDecoration(labelText: 'Description'),
+                ),
+                SizedBox(height: 16.0),
+                ElevatedButton(
+                  onPressed: () async {
+                    // Update book and close modal
+                    controller.updateBook(
+                      index,
+                      Book(
+                        id: book.id,
+                        title: titleController.text,
+                        imageUrl: imageUrlController.text,
+                        description: descriptionController.text,
+                      ),
+                    );
+                    await onCloseOverlays(closeOverlays: true);
+
+                    Get.back();
+                    // Close the modal
+                  },
+                  child: Text('Update'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildPopupMenuButton(BuildContext context, Book book, int index) {
     return PopupMenuButton(
       itemBuilder: (context) => [
@@ -126,12 +188,21 @@ class BooksView extends StatelessWidget {
             title: Text('Update'),
           ),
         ),
+        PopupMenuItem(
+          value: 'update2',
+          child: ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Upadate2'),
+          ),
+        ),
       ],
       onSelected: (value) {
         if (value == 'delete') {
           _deleteBook(context, index);
         } else if (value == 'update') {
           _editBook(context, book, index);
+        } else if (value == 'update2') {
+          Get.to(CuBookView(book: book));
         }
       },
     );
@@ -149,9 +220,9 @@ class BooksView extends StatelessWidget {
 
         Get.snackbar(
           'Success',
-          LocaleKeys.book_added.trParams({
-            'name':'Hello SidiALi'
-          }),
+          'Book deleted successfully',
+          backgroundColor: Colors.green, // Set background color
+          colorText: Colors.white, // Set text color
           duration: Duration(seconds: 4),
           snackPosition: SnackPosition.BOTTOM,
         );

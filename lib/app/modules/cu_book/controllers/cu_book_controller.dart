@@ -1,25 +1,21 @@
 import 'package:get/get.dart';
 import 'package:injectable/injectable.dart';
+import 'package:book_store/app/data/book_model.dart';
+import 'package:book_store/app/services/books_service.dart';
 
 @injectable
 class CuBookController extends GetxController {
-  //TODO: Implement CuBookController
+  List<Book> get books => booksService.books;
+  final BooksService booksService;
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  CuBookController(this.booksService);
+
+  // Update book based on its ID
+  void updateBook(int index, Book book) {
+    if (index >= 0 && index < booksService.books.length) {
+      booksService.books[index] = book;
+    } else {
+      print('Invalid index: $index');
+    }
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }

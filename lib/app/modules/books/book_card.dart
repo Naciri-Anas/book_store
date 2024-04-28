@@ -1,10 +1,12 @@
+import 'package:book_store/app/modules/cu_book/views/cu_book_view.dart';
+import 'package:book_store/app/routes/app_pages.dart';
+import 'package:book_store/app/shared/widgets/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:book_store/app/data/book_model.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class BookCard extends StatelessWidget {
+   final VoidCallback onUpdate3;
   final Book book;
   final VoidCallback onTap;
   final VoidCallback onDelete;
@@ -16,6 +18,7 @@ class BookCard extends StatelessWidget {
     required this.onTap,
     required this.onDelete,
     required this.onUpdate,
+    required this.onUpdate3,
   }) : super(key: key);
 
   @override
@@ -31,9 +34,11 @@ class BookCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Expanded(
-                  child: CachedNetworkImage(
+                  child: SplitNetworkImage(
+                    // Replace CachedNetworkImage with SplitNetworkImage
                     imageUrl: book.imageUrl,
-                    fit: BoxFit.cover,
+                    width: double.infinity, // Adjust width as needed
+                    height: double.infinity, // Adjust height as needed
                   ),
                 ),
                 Padding(
@@ -82,14 +87,31 @@ class BookCard extends StatelessWidget {
             title: Text('Update'),
           ),
         ),
+        PopupMenuItem(
+          value: 'update2',
+          child: ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Upadate2'),
+          ),
+        ),
+         PopupMenuItem(
+          value: 'update3',
+          child: ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Update 3'),
+          ),
+         ),
       ],
       onSelected: (value) {
         if (value == 'delete') {
           onDelete();
-
-
         } else if (value == 'update') {
           onUpdate();
+        } else if (value == 'update2') {
+          Get.to(CuBookView(book: book));
+        }
+        else if (value == 'update3') {
+          onUpdate3(); 
         }
       },
     );

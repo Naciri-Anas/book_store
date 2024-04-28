@@ -58,7 +58,7 @@ class AddBookView extends StatelessWidget {
                     // If form is valid, add book
                     controller.addBook(
                       Book(
-                        id: DateTime.now().toString(),
+                        id: DateTime.now().millisecondsSinceEpoch,
                         title: titleController.text,
                         imageUrl: imageUrlController.text,
                         description: descriptionController.text,
@@ -70,6 +70,8 @@ class AddBookView extends StatelessWidget {
                     Get.snackbar(
                       'Success',
                       'Book added successfully',
+                      backgroundColor: Colors.green, // Set background color
+                      colorText: Colors.white, // Set text color
                       duration: Duration(seconds: 4),
                       snackPosition: SnackPosition.BOTTOM,
                     );

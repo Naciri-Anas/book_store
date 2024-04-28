@@ -7,11 +7,14 @@ class BooksService {
   final books = RxList<Book>();
 
   void add(Book book) {
-    // Call API
-    // await
-    // result book created
-
-
     books.add(book);
+  }
+
+  void update(int index, Book book) {
+    books[index] = book;
+  }
+
+  void delete(int index) {
+    books.removeAt(index);
   }
 }

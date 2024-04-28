@@ -15,6 +15,8 @@ class LocaleKeys {
   static const book_add = 'book_add';
   static const book_added = 'book_added';
   static const error_upload_image = 'error_upload_image';
+  static const are_you_sure = 'are_you_sure';
+  static const cancel = 'cancel';
 }
 
 class Locales {
@@ -23,6 +25,8 @@ class Locales {
     'book_add': 'added sucessfuly',
     'book_added': '@name added sucessfuly',
     'error_upload_image': 'error uploading image',
+    'are_you_sure': 'Are you sure?',
+    'cancel': 'Cancel',
   };
   static const fr = {
     'app_name': 'bookmaker',

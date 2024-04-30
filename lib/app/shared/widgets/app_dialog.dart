@@ -60,7 +60,7 @@ class AppDialog extends StatelessWidget {
                     if (title != null)
                       Text(
                         title!,
-                        style: context.textTheme.headlineLarge,
+                        style: context.textTheme.headlineLarge?.copyWith(color: Colors.black),
                         maxLines: 1,
                         textAlign: TextAlign.start,
                       ),
@@ -69,7 +69,7 @@ class AppDialog extends StatelessWidget {
                       Text(
                         message ?? '',
                         style: context.textTheme.bodyLarge!.copyWith(
-                          color: context.theme.cardColor,
+                          color:Colors.grey,
                         ),
                         textAlign: TextAlign.start,
                         maxLines: 6,

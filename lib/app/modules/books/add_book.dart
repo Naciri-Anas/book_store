@@ -7,6 +7,7 @@ class AddBookView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.clearTextControllers();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Book'),

@@ -46,7 +46,8 @@ class AppDialog extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         scrollable: scrollable,
         contentPadding: const EdgeInsets.all(24.0),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(circularBorderRadius)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(circularBorderRadius)),
         content: SizedBox(
             width: width,
             // height: height,
@@ -60,23 +61,26 @@ class AppDialog extends StatelessWidget {
                     if (title != null)
                       Text(
                         title!,
-                        style: context.textTheme.headlineLarge?.copyWith(color: Colors.black),
+                        style: context.textTheme.headlineLarge
+                            ?.copyWith(color: Colors.black),
                         maxLines: 1,
                         textAlign: TextAlign.start,
                       ),
-                    if (title != null && message != null) SizedBox(height: spaceTitleSubTitle),
+                    if (title != null && message != null)
+                      SizedBox(height: spaceTitleSubTitle),
                     if (message != null)
                       Text(
                         message ?? '',
                         style: context.textTheme.bodyLarge!.copyWith(
-                          color:Colors.grey,
+                          color: Colors.grey,
                         ),
                         textAlign: TextAlign.start,
                         maxLines: 6,
                       ),
                   ],
                 ),
-                if (content != null) SizedBox(height: spaceBetweenHeaderContent),
+                if (content != null)
+                  SizedBox(height: spaceBetweenHeaderContent),
                 if (content != null && scrollable) content!,
                 if (content != null && !scrollable) Expanded(child: content!)
               ],

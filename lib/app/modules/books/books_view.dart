@@ -49,156 +49,48 @@ class BooksView extends StatelessWidget {
 
   void _addBook(BuildContext context) {
     Get.to(AddBookView())?.then((value) {
-      // Do something after adding book, if needed
     });
   }
 
-
-
   void _editBook(BuildContext context, Book book, String id) {
-
-    // logic continue
-    final titleController = TextEditingController(text: book.title);
-    final imageUrlController = TextEditingController(text: book.imageUrl);
-    final descriptionController = TextEditingController(text: book.description);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Update Book'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(labelText: 'Title'),
-                ),
-                TextField(
-                  controller: imageUrlController,
-                  decoration: const InputDecoration(labelText: 'Image URL'),
-                ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                controller.updateBook(
-                  id,
-                  Book(
-                    title: titleController.text,
-                    imageUrl: imageUrlController.text,
-                    description: descriptionController.text,
-                  ),
-                );
-                Navigator.pop(context);
-              },
-              child: const Text('Update'),
-            ),
-          ],
-        );
-      },
-    );
+    controller.editBook(context, book, id);
   }
 
   void _editBook3(BuildContext context, Book book, String id) {
-    TextEditingController titleController =
-        TextEditingController(text: book.title);
-    TextEditingController imageUrlController =
-        TextEditingController(text: book.imageUrl);
-    TextEditingController descriptionController =
-        TextEditingController(text: book.description);
-    onOpenModal(SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Update Book'),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: titleController,
-              decoration: const InputDecoration(labelText: 'Title'),
-            ),
-            TextField(
-              controller: imageUrlController,
-              decoration: const InputDecoration(labelText: 'Image URL'),
-            ),
-            TextField(
-              controller: descriptionController,
-              decoration: const InputDecoration(labelText: 'Description'),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () async {
-                // Update book and close modal
-                controller.updateBook(
-                  id,
-                  Book(
-                    title: titleController.text,
-                    imageUrl: imageUrlController.text,
-                    description: descriptionController.text,
-                  ),
-                );
-                await onCloseOverlays(closeOverlays: true);
+    controller.editBook3(context, book, id);
+  }
 
-                Get.back();
-                // Close the modal
+  Future<void> _deleteBook(BuildContext context, String id) async {
+    final result = await onOpenDialog(
+      AppDialog(
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this book?',
+        content: Column(
+          children: [
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Get.back(result: 'Delete'); 
               },
-              child: const Text('Update'),
+              child: Text('Delete'), 
+            ),
+            SizedBox(height: 16), 
+            TextButton(
+              onPressed: () {
+                Get.back(result: 'Cancel'); 
+              },
+              child: Text('Cancel'), 
             ),
           ],
         ),
       ),
-    ));
-  }
-
-
-  Future _deleteBook(BuildContext context, String id) async {
-    onOpenDialog(AppDialog(
-      title: 'Confirm Delete',
-      message: 'Are you sure you want to delete this book?',
-      content: Row(
-        children: [
-
-        ],
-      ),
-    ));
-    return;
-    final result = await Get.defaultDialog<String?>(
-      title: 'Confirm Delete',
-      content: const Text('Are you sure you want to delete this book?'),
-      textConfirm: 'Delete',
-      confirmTextColor: Colors.white,
-      onConfirm: () async {
-        controller.onDeleteBook(id);
-        await onCloseOverlays(closeOverlays: true);
-
-        Get.snackbar(
-          'Success',
-          'Book deleted successfully',
-          backgroundColor: Colors.green, // Set background color
-          colorText: Colors.white, // Set text color
-          duration: const Duration(seconds: 4),
-          snackPosition: SnackPosition.BOTTOM,
-        );
-      },
-      textCancel: 'Cancel',
-      onCancel: () {
-        Get.back(); // Close the dialog
-      },
     );
 
-    print(result);
+    if (result == 'Delete') {
+      
+      controller.onDeleteBook(id);
+      await onCloseOverlays(closeOverlays: true);
+    } else {
+    }
   }
 }

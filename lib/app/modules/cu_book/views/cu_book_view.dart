@@ -66,7 +66,7 @@ class CuBookView extends StatelessWidget {
                     controller.updateBook(
                         book.id,
                         Book(
-                          id: book.id,
+
                           title: titleController.text,
                           imageUrl: imageUrlController.text,
                           description: descriptionController.text,

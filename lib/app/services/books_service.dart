@@ -10,11 +10,17 @@ class BooksService {
     books.add(book);
   }
 
-  void update(int index, Book book) {
+  void update(String id, Book book) {
+    final index = books.indexWhere((element) => element.id == id);
+    if (index == -1) return;
     books[index] = book;
+    books.refresh();
   }
 
-  void delete(int index) {
+  void delete(String id) {
+    final index = books.indexWhere((element) => element.id == id);
+    if (index == -1) return;
     books.removeAt(index);
+    books.refresh();
   }
 }

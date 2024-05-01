@@ -1,38 +1,52 @@
-import 'package:book_store/app/data/book_model.dart';
+import 'package:book_store/core/di/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/cu_book_controller.dart';
 
-class CuBookView extends StatelessWidget {
-  final Book book;
-  final TextEditingController titleController;
-  final TextEditingController imageUrlController;
-  final TextEditingController descriptionController;
-  final _formKey = GlobalKey<FormState>(); // Key for form validation
-  final CuBookController controller = Get.find<CuBookController>();
+class CuBookView extends StatefulWidget {
+  final String? id;
 
-  CuBookView({required this.book})
-      : titleController = TextEditingController(text: book.title),
-        imageUrlController = TextEditingController(text: book.imageUrl),
-        descriptionController = TextEditingController(text: book.description);
+  CuBookView({this.id});
+
+  @override
+  State<CuBookView> createState() => _CuBookViewState();
+}
+
+class _CuBookViewState extends State<CuBookView> {
+  late CuBookController controller;
+
+  bool get isEditMode => widget.id != null;
+
+  @override
+  void initState() {
+    controller = Get.put(getIt<CuBookController>(), tag: '${UniqueKey()}');
+    controller.init(widget.id);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.onDelete();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Update 2'),
+        title: Text(isEditMode ? 'Update 2' : 'Create'),
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey, // Assign form key
+          key: controller.formKey, // Assign form key
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
-                controller: titleController,
-                decoration: InputDecoration(labelText: 'Title'),
+                controller: controller.titleController,
+                decoration: const InputDecoration(labelText: 'Title'),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter a title';
@@ -40,10 +54,10 @@ class CuBookView extends StatelessWidget {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
-                controller: imageUrlController,
-                decoration: InputDecoration(labelText: 'Image URL'),
+                controller: controller.imageUrlController,
+                decoration: const InputDecoration(labelText: 'Image URL'),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter an image URL';
@@ -52,38 +66,21 @@ class CuBookView extends StatelessWidget {
                   return null;
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextFormField(
-                controller: descriptionController,
-                decoration: InputDecoration(labelText: 'Description'),
+                controller: controller.descriptionController,
+                decoration: const InputDecoration(labelText: 'Description'),
               ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  // Validate form
-                  if (_formKey.currentState!.validate()) {
-                    // If form is valid, update book using CuBookController
-                    controller.updateBook(
-                        book.id,
-                        Book(
-
-                          title: titleController.text,
-                          imageUrl: imageUrlController.text,
-                          description: descriptionController.text,
-                        ));
-
-                    Get.back();
-
-                    Get.snackbar(
-                      'Success',
-                      'Book updated successfully',
-                      duration: Duration(seconds: 4),
-                      snackPosition: SnackPosition.BOTTOM,
-                    );
-                  }
-                },
-                child: Text('Update Book'),
-              ),
+              const SizedBox(height: 16.0),
+              isEditMode
+                  ? ElevatedButton(
+                      onPressed: () => controller.onUpdateBook(),
+                      child: const Text('Update Book'),
+                    )
+                  : ElevatedButton(
+                      onPressed: () => controller.onAddBook(),
+                      child: const Text('Create Book'),
+                    ),
             ],
           ),
         ),

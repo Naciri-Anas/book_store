@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:book_store/app/data/book_model.dart';
 import 'package:book_store/app/routes/app_pages.dart';
 import 'package:book_store/app/services/books_service.dart';
+import 'package:book_store/app/shared/widgets/app_dialog.dart';
 import 'package:book_store/app/shared/widgets/app_show_overlay.dart';
 import 'package:book_store/app/shared/widgets/app_snackbar.dart';
-import 'package:book_store/core/errors/message_types.dart';
 import 'package:book_store/core/extensions/get_ext.dart';
 import 'package:book_store/core/loading/loading_state.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +42,12 @@ class BooksController extends GetxController {
   void onClose() {
     messageStateSub?.cancel();
     super.onClose();
+
+    String? name;
+    //
+    name = 'Amine';
+
+    String name2 = name!;
   }
 
   List<Book> get books => booksService.books;
@@ -50,8 +56,37 @@ class BooksController extends GetxController {
     booksService.add(book);
   }
 
-  void updateBook(String id, Book book) {
+  void onUpdateBook(String id, Book book) {
     booksService.update(id, book);
+  }
+
+  Future<void> onOpenDeleteBookDialog(BuildContext context, String id) async {
+    onOpenDialog<bool>(
+      AppDialog(
+        title: 'Confirm Delete',
+        message: 'Are you sure you want to delete this book?',
+        content: Column(
+          children: [
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                Get.back(result: false);
+                onDeleteBook(id);
+                onCloseOverlays(closeOverlays: true);
+              },
+              child: const Text('Delete'),
+            ),
+            const SizedBox(height: 16),
+            TextButton(
+              onPressed: () {
+                Get.back(result: 'Cancel');
+              },
+              child: const Text('Cancel'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void onDeleteBook(String id) async {
@@ -62,12 +97,14 @@ class BooksController extends GetxController {
       Get.pop();
       messageState.value = const LOADED(message: 'Book deleted successfully');
     } catch (e) {
-      messageState.value = ERROR(message: 'Failed to delete book');
+      messageState.value = const ERROR(message: 'Failed to delete book');
     }
   }
 
   goToCreateBook() {
-    Get.toNamed(Routes.CU_BOOK);
+    Get.toNamed(
+      Routes.CU_BOOK,
+    );
   }
 
   goToUpdateBook(String id) {
@@ -76,82 +113,65 @@ class BooksController extends GetxController {
     });
   }
 
-  onAddBook() async {
-    if (formKey.currentState!.validate()) {
-      messageState.value = const LOADING();
-      // If form is valid, add book
-      addBook(
-        Book(
-          title: titleController.text,
-          imageUrl: imageUrlController.text,
-          description: descriptionController.text,
-        ),
-      );
-
-      Get.pop();
-      messageState.value = const LOADED(message: 'Book added successfully');
-    }
-  }
-
-  Future<void> editBook(BuildContext context, Book book, String id) async {
+  Future<void> onEditBook(BuildContext context, Book book, String id) async {
     // Logic for editing a book
     final titleController = TextEditingController(text: book.title);
     final imageUrlController = TextEditingController(text: book.imageUrl);
     final descriptionController = TextEditingController(text: book.description);
 
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Update Book'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  controller: titleController,
-                  decoration: const InputDecoration(labelText: 'Title'),
-                ),
-                TextField(
-                  controller: imageUrlController,
-                  decoration: const InputDecoration(labelText: 'Image URL'),
-                ),
-                TextField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
-                ),
-              ],
-            ),
+    onOpenDialog(AppDialog(
+      title: 'Update Book',
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: titleController,
+            decoration: const InputDecoration(labelText: 'Title'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                updateBook(
-                  id,
-                  Book(
-                    title: titleController.text,
-                    imageUrl: imageUrlController.text,
-                    description: descriptionController.text,
-                  ),
-                );
-                Navigator.pop(context);
-              },
-              child: const Text('Update'),
-            ),
-          ],
-        );
-      },
-    );
+          TextFormField(
+            controller: imageUrlController,
+            decoration: const InputDecoration(labelText: 'Image URL'),
+          ),
+          TextFormField(
+            controller: descriptionController,
+            decoration: const InputDecoration(labelText: 'Description'),
+          ),
+          const SizedBox(height: 32),
+          Row(
+            children: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              const SizedBox(width: 16),
+              TextButton(
+                onPressed: () {
+                  onUpdateBook(
+                    id,
+                    Book(
+                      title: titleController.text,
+                      imageUrl: imageUrlController.text,
+                      description: descriptionController.text,
+                    ),
+                  );
+                  onCloseOverlays(closeDialog: true);
+                },
+                child: const Text('Update'),
+              ),
+            ],
+          )
+        ],
+      ),
+    ));
   }
 
-   void editBook3(BuildContext context, Book book, String id) {
-    TextEditingController titleController = TextEditingController(text: book.title);
-    TextEditingController imageUrlController = TextEditingController(text: book.imageUrl);
-    TextEditingController descriptionController = TextEditingController(text: book.description);
+  void onEditBook3(BuildContext context, Book book, String id) {
+    TextEditingController titleController =
+        TextEditingController(text: book.title);
+    TextEditingController imageUrlController =
+        TextEditingController(text: book.imageUrl);
+    TextEditingController descriptionController =
+        TextEditingController(text: book.description);
     onOpenModal(
       SingleChildScrollView(
         child: Padding(
@@ -161,15 +181,15 @@ class BooksController extends GetxController {
             children: [
               const Text('Update Book'),
               const SizedBox(height: 16.0),
-              TextField(
+              TextFormField(
                 controller: titleController,
                 decoration: const InputDecoration(labelText: 'Title'),
               ),
-              TextField(
+              TextFormField(
                 controller: imageUrlController,
                 decoration: const InputDecoration(labelText: 'Image URL'),
               ),
-              TextField(
+              TextFormField(
                 controller: descriptionController,
                 decoration: const InputDecoration(labelText: 'Description'),
               ),
@@ -177,7 +197,7 @@ class BooksController extends GetxController {
               ElevatedButton(
                 onPressed: () async {
                   try {
-                    updateBook(
+                    onUpdateBook(
                       id,
                       Book(
                         title: titleController.text,
@@ -206,9 +226,4 @@ class BooksController extends GetxController {
     );
   }
 
-   void clearTextControllers() {
-    titleController.clear();
-    imageUrlController.clear();
-    descriptionController.clear();
-  }
 }

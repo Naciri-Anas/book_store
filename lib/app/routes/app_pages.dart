@@ -17,8 +17,11 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.CU_BOOK,
-      // ignore: null_check_always_fails
-      page: () => CuBookView(book: null!,),
+      page: () {
+        return CuBookView(
+          id: Get.parameters['id'],
+        );
+      },
     ),
   ];
 }

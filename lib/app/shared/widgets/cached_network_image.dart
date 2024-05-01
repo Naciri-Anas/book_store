@@ -19,14 +19,25 @@ class SplitNetworkImage extends StatelessWidget {
       width: width,
       height: height,
       placeholder: (context, url) =>
-          CircularProgressIndicator(), // Use a CircularProgressIndicator as a placeholder
-      errorWidget: (context, url, error) => _buildErrorWidget(),
+          const Center(child: CircularProgressIndicator()), // Use a CircularProgressIndicator as a placeholder
+      errorWidget: (context, url, error) => _ErrorWidget(imageUrl: imageUrl,),
       // Remove the progressIndicatorBuilder
     );
   }
 
-  Widget _buildErrorWidget() {
-    return Center(
+  // widget as func
+}
+
+class _ErrorWidget extends StatelessWidget {
+  const _ErrorWidget({
+    super.key, required this.imageUrl,
+  });
+
+  final String imageUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
       child: Icon(
         Icons.error,
         color: Colors.red,

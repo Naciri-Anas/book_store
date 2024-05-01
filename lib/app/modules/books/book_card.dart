@@ -11,6 +11,8 @@ class BookCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onDelete;
   final VoidCallback onUpdate;
+  final VoidCallback onUpdate2;
+
 
   const BookCard({
     Key? key,
@@ -18,6 +20,7 @@ class BookCard extends StatelessWidget {
     required this.onTap,
     required this.onDelete,
     required this.onUpdate,
+    required this.onUpdate2,
     required this.onUpdate3,
   }) : super(key: key);
 
@@ -108,7 +111,7 @@ class BookCard extends StatelessWidget {
         } else if (value == 'update') {
           onUpdate();
         } else if (value == 'update2') {
-          Get.to(CuBookView(book: book));
+          onUpdate2();
         }
         else if (value == 'update3') {
           onUpdate3(); 
